@@ -17,4 +17,4 @@ you are presently viewing, it has no entry point into the database for any use o
 The second part is used by the Administrator, and can be seen at the repository https://github.com/pkhenry52/Adm_PipeSpec, 
 this allows for viewing, printing and changes to the database.
 
-Additional information can be seen under the Docs directory in the PipeSepcification.pdf
+Additional information can be seen in the https://github.com/pkhenry52/User_PipeSpec/blob/master/Docs/PipeSpecification.pdf
