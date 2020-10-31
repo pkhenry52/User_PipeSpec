@@ -17,4 +17,49 @@ you are presently viewing, it has no entry point into the database for any use o
 The second part is used by the Administrator, and can be seen at the repository https://github.com/pkhenry52/Adm_PipeSpec, 
 this allows for viewing, printing and changes to the database.
 
-Additional information can be seen in the https://github.com/pkhenry52/User_PipeSpec/blob/master/Docs/PipeSpecification.pdf
+ 1. The program allows for easy development, maintenance and update control of a complete plant site commodity pipe specification.
+ 1. It has the capability to have a custom commodity pipe specification code of up to 15 characters.
+ 1. The specification is build based on material grade, material type, pressure rating (flange), and corrosion allowance, common in the industry.
+ 1. The commodity code itself can be unique to each specification or duplicated based on a class such as STM for steam.
+ 1. A large amount of the data used to build a specification is already built into the data and needs only a click to select.
+ 1. Information available for the development of a specification is already narrowed down based on the specified material type and grade.
+  1. There are numerous forms pre-built in HTML format to hand items which require additional sign off approvals, such as Hydro Test Waivers, Material Substitution Requests, Non-conformance Reports etc.
+ 1. The building of Scope of Works for the end users has been automated to print out all relevant pipe specification information or just selected sections if needed.
+ 1. There is a system to import both the Material Substitution Requests and Non-conformance Report, both HTML documents into the database.  The intent is so the can be reviewed at a later data and if needed addressed or even to make amends to the piping specification data.
+ 1. To help control inspection there is a capability to build an inspection travel sheet for each scope of work.
+ 1. Because it is a database the data can be updated easily unlike a word document or pdf file. The data can be turned out either as access of a single source on a central server or as a file to each required end user.  The administrator can keep a separate control document which can be updated on the go.
+ 1. EPCM companies can have numerous different pipe specifications all accessible with this program.
+
+ 1. The information covered in each commodity pipe specification includes;
+       
+ - Piping 
+ - Fittings (elbows, tees, laterals, reducers etc.)
+ - Flanges
+ - Orifice Flanges
+ - Gasket Packs
+ - Fasteners
+ - Unions
+ - O-lets
+ - Groove Clamps
+ - Weld Requirements
+ - Tubing
+ - Branch Chart
+ - Inspection Packs
+ - Notes for commodities and pipe components
+ - Paint Specification
+ - Insulation
+ - Gate Valve
+ - Globe Valve
+ - Plug Valve
+ - Ball Valve
+ - Butterfly Valve
+ - Piston Check Valv
+ - Swing Check Valve
+ - Specials
+
+
+The program has been developed in Python 3.7 and is cross platform with Windows and Linux systems.      The program code is open source and free to be downloaded and modified as desired, all though this is not the intent for most users.  It allows for testing and trial turn out to the users with sample data.
+
+The data is located in a collection of 116 data tables, all viewable with SQLite Studio which can be downloaded without charge at https://sqlitestudio.pl .  It is not recommend that the tables be accessed this way as damage to the data schema can occur if the user is not familiar with SQLite.  The Pipe Specification gives full control over all aspects of the data with built in safe guards to prevent this inadvertent damage.
+
+If further information is needed a user manual can be seen at https://github.com/pkhenry52/User_PipeSpec/blob/master/Docs/PipeSpecification.pdf.
