@@ -26,14 +26,14 @@ def connect_db(filename):
 class StrUpFrm(wx.Frame):
     # the main stsart up form which begins with the selection of the database
     # followed with the login and then selection of the user screens
-    def __init__(self, parent):
+    def __init__(self):
 
-        wx.Frame.__init__(self, None, wx.ID_ANY,
-                          "Pipe Specification Start-Up",
-                          size=(250, 150),
-                          style=wx.DEFAULT_FRAME_STYLE &
-                          ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX |
-                            wx.MINIMIZE_BOX))
+        super(StrUpFrm, self).__init__(None, wx.ID_ANY,
+                                       "Pipe Specification Start-Up",
+                                       size=(250, 150),
+                                       style=wx.DEFAULT_FRAME_STYLE &
+                                       ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX |
+                                         wx.MINIMIZE_BOX))
 
         self.Bind(wx.EVT_CLOSE, self.OnClosePrt)
 
@@ -69,7 +69,7 @@ class StrUpFrm(wx.Frame):
         if self.path != '':
             connect_db(self.path)
             self.go_value = True
-            SpecFrm(self, -1)
+            SpecFrm(self)
 
     def OnClosePrt(self, evt):
         if self.go_value:
@@ -79,18 +79,20 @@ class StrUpFrm(wx.Frame):
 
 
 class SpecFrm(wx.Frame):
-    def __init__(self, parent, id, model=None):
+    def __init__(self, parent):
         self.parent = parent
 
-        wx.Frame.__init__(
-            self, parent,
+        super(SpecFrm, self).__init__(parent,
             title='Commodity Properties and Related Piping Specification')
 
         self.Maximize(True)
         self.SetSizeHints(minW=1125, minH=750)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
-        self.pnl = BldFrm(self, -1)
+        self.InitUI()
+
+    def InitUI(self):
+        self.pnl = BldFrm(self)
 
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(self.pnl, 1, wx.EXPAND | wx.ALL, 0)
@@ -111,6 +113,7 @@ class SpecFrm(wx.Frame):
         self.Bind(wx.EVT_MENU, self.pnl.OnConvert, html2pdf)
         dlet = fyl.Append(wx.ID_ANY, "Delete Document")
         self.Bind(wx.EVT_MENU, self.pnl.OnDelete, dlet)
+        fyl.AppendSeparator()
         exxt = fyl.Append(wx.ID_EXIT, "E&xit")
         self.Bind(wx.EVT_MENU, self.OnClose, exxt)
         menuBar.Append(fyl, "&File")
@@ -135,7 +138,7 @@ class SpecFrm(wx.Frame):
         frmhelp = wx.Menu()
         calc = frmhelp.Append(300, 'Misc Calculations')
         self.Bind(wx.EVT_MENU, self.pnl.OnCalcs, calc)
-        hlp = frmhelp.Append(301, 'Use of Form')
+        hlp = frmhelp.Append(301, 'Help for this Form')
         self.Bind(wx.EVT_MENU, self.pnl.OnHelp, hlp)
         abut = frmhelp.Append(302, 'About')
         self.Bind(wx.EVT_MENU, self.pnl.OnAbout, abut)
@@ -158,13 +161,14 @@ class SpecFrm(wx.Frame):
 
 class BldFrm(wx.Panel):
 
-    def __init__(self, parent, id, model=None):
+    def __init__(self, parent, model=None):
         '''Routine to build form and populate grid'''
+        super(BldFrm, self).__init__(parent)
+
         self.btns = []
         self.lctrls = []
         self.tblname = 'CommodityProperties'
-
-        wx.Panel.__init__(self, parent)
+        self.model = model
 
         self.data = self.LoadComdData()
 
@@ -172,6 +176,9 @@ class BldFrm(wx.Panel):
         self.NewSpec = False
         self.ComdPrtyID = None
 
+        self.InitUI()
+
+    def InitUI(self):
         # set up the table column names, width and if
         # column can be edited ie primary autoincrement
         tblinfo = []
@@ -205,10 +212,8 @@ class BldFrm(wx.Panel):
             self.data.sort(key=lambda tup: tup[ID_col])
 
         # use the sorted data to load the dataviewlistcontrol
-        if model is None:
+        if self.model is None:
             self.model = DataMods(self.tblname, self.data)
-        else:
-            self.model = model
         self.dvc.AssociateModel(self.model)
 
         n = 0
@@ -411,10 +416,10 @@ class BldFrm(wx.Panel):
             self.Sizer1.Add(chksizer, 0, wx.ALL, 10)
 
         self.prtsizer = wx.BoxSizer(wx.VERTICAL)
-        self.b1 = wx.Button(self, label="Print the\nSelected Items")
+        self.b1 = wx.Button(self, label="Build Report for\nSelected Items")
         self.Bind(wx.EVT_BUTTON, self.OnPrintItems, self.b1)
         self.b1.Enable(False)
-        self.b2 = wx.Button(self, label='Print a complete\nScope of Work')
+        self.b2 = wx.Button(self, label='Build Scope\nof Work')
         self.Bind(wx.EVT_BUTTON, self.OnPrintScope, self.b2)
         self.b2.Enable(False)
         self.prtsizer.Add(self.b1, 0, wx.ALIGN_CENTER)
@@ -536,13 +541,13 @@ class BldFrm(wx.Panel):
                 wx.MessageBox('Problem Locating Web Browser', 'Error', wx.OK)
 
     def OnPDF(self, evt):
-        PDFFrm(self, -1)
+        PDFFrm(self)
 
     def OnMerge(self, evt):
-        MergeFrm(self, -1)
+        MergeFrm(self)
 
     def OnITS(self, evt):
-        BldTrvlSht(self, -1)
+        BldTrvlSht(self)
 
     def OnConvert(self, evt):
         # select the html file to convert
@@ -681,7 +686,7 @@ class BldFrm(wx.Panel):
         wx.MessageBox(msg, 'Title', wx.OK)
 
     def OnCalcs(self, evt):
-        CalcFrm(self, -1)
+        CalcFrm(self)
 
     def OnPrintItems(self, evt):
         # get a specific user file name
@@ -708,6 +713,7 @@ class BldFrm(wx.Panel):
                     rpts[self.tbl_rpt[tblrpt]].append(tblrpt)
 
             self.rptSelection(rpts, filename)
+            PDFFrm(self, filename)
 
     def OnPrintScope(self, evt):
         msg = 'Save Report as PDF.'
@@ -731,6 +737,7 @@ class BldFrm(wx.Panel):
                 rpts[self.tbl_rpt[tblrpt]].append(tblrpt)
 
             self.rptSelection(rpts, filename)
+            PDFFrm(self, filename)
 
     def rptSelection(self, rpts, filename):
         # this loop will be used to generate the first report
@@ -840,6 +847,14 @@ class BldFrm(wx.Panel):
             self.Bind(wx.EVT_BUTTON, self.OnRestoreTbl, self.b6)
             self.Srch = True
 
+    def OnRestoreBoxs(self, evt):
+        self.RestoreBoxs()
+        for chkbox in self.chkboxs:
+            chkbox.SetValue(0)
+
+    def OnRestoreTbl(self, evt):
+        self.RestoreTbl()
+
     def RestoreBoxs(self):
         self.cmbCode.ChangeValue('')
         self.cmbPipe.ChangeValue('')
@@ -866,12 +881,6 @@ class BldFrm(wx.Panel):
         self.dvc.AssociateModel(self.model)
         self.dvc.Refresh
         self.Search_Restore()
-
-    def OnRestoreBoxs(self, evt):
-        self.RestoreBoxs()
-
-    def OnRestoreTbl(self, evt):
-        self.RestoreTbl()
 
     def OnSearch(self, evt):
         srchstrg = ''
@@ -930,14 +939,21 @@ class BldFrm(wx.Panel):
 
 
 class MergeFrm(wx.Frame):
-    def __init__(self, parent, id):
+    def __init__(self, parent):
+
+
+        super(MergeFrm, self).__init__(parent,
+                                       title='Select pdf files to merge',
+                                       size=(725, 550))
+        self.Bind(wx.EVT_CLOSE, self.OnExit)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+
         from wx.lib.itemspicker import ItemsPicker, \
              EVT_IP_SELECTION_CHANGED, IP_REMOVE_FROM_CHOICES
 
-        wx.Frame.__init__(self, parent, title='Select pdf files to merge',
-                          size=(725, 550))
-
-        self.parent = parent
         self.Sizer = wx.BoxSizer(wx.VERTICAL)
 
         pick_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -1038,26 +1054,32 @@ class MergeFrm(wx.Frame):
 
 
 class PDFFrm(wx.Frame):
-    def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent)
-        from wx.lib.pdfviewer import pdfViewer, pdfButtonPanel
-        self.Maximize(True)
+    def __init__(self, parent, filename=None):
+        super(PDFFrm, self).__init__(parent)
 
+        self.Maximize(True)
         self.parent = parent
+        self.filename = filename
+
         self.Bind(wx.EVT_CLOSE, self.OnCloseFrm)
+        self.InitUI()
+
+    def InitUI(self):
+        from wx.lib.pdfviewer import pdfViewer, pdfButtonPanel
 
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         vsizer = wx.BoxSizer(wx.VERTICAL)
-        self.buttonpanel = pdfButtonPanel(self, wx.NewId(),
+        self.buttonpanel = pdfButtonPanel(self, wx.ID_ANY,
                                           wx.DefaultPosition,
                                           wx.DefaultSize, 0)
         vsizer.Add(self.buttonpanel, 0,
                    wx.GROW)
-        self.viewer = pdfViewer(self, wx.NewId(), wx.DefaultPosition,
+        self.viewer = pdfViewer(self, wx.ID_ANY, wx.DefaultPosition,
                                 wx.DefaultSize, wx.HSCROLL |
                                 wx.VSCROLL | wx.SUNKEN_BORDER)
+
         vsizer.Add(self.viewer, 1, wx.GROW)
-        loadbutton = wx.Button(self, wx.NewId(), "Load PDF file",
+        loadbutton = wx.Button(self, wx.ID_ANY, "Load PDF file",
                                wx.DefaultPosition, wx.DefaultSize, 0)
         loadbutton.SetForegroundColour((255, 0, 0))
         vsizer.Add(loadbutton, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -1070,6 +1092,9 @@ class PDFFrm(wx.Frame):
         self.viewer.buttonpanel = self.buttonpanel
 
         self.Bind(wx.EVT_BUTTON, self.OnLoadButton, loadbutton)
+
+        if self.filename != None:
+            self.viewer.LoadFile(self.filename)
 
         self.CenterOnParent()
         self.GetParent().Enable(False)
@@ -1093,11 +1118,11 @@ class PDFFrm(wx.Frame):
 
 
 class CalcFrm(wx.Frame):
-    def __init__(self, parent, id):
+    def __init__(self, parent):
         self.lctrls = []
         self.parent = parent
 
-        wx.Frame.__init__(self, parent, id,
+        super(CalcFrm, self).__init__(parent,
                           title='Wall Thickness and Hydro-Test calculation',
                           size=(580, 720),
                           style=wx.DEFAULT_FRAME_STYLE & ~ (wx.RESIZE_BORDER |
@@ -1107,7 +1132,7 @@ class CalcFrm(wx.Frame):
         self.FrmSizer = wx.BoxSizer(wx.VERTICAL)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
-        self.pnl = CalcPnl(self, -1)
+        self.pnl = CalcPnl(self)
         self.FrmSizer.Add(self.pnl, 1, wx.EXPAND)
         self.FrmSizer.Add((35, 10))
         self.FrmSizer.Add((10, 20))
@@ -1129,11 +1154,13 @@ class CalcFrm(wx.Frame):
 
 class CalcPnl(sc.ScrolledPanel):
 
-    def __init__(self, parent, id):
-        sc.ScrolledPanel.__init__(self, parent, size=(560, 630))
+    def __init__(self, parent):
+        super(CalcPnl, self).__init__(parent, size=(560, 630))
 
         self.lctrls = []
+        self.InitUI()
 
+    def InitUI(self):
         font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         font1 = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD)
 
@@ -1506,7 +1533,7 @@ class CalcPnl(sc.ScrolledPanel):
         return chckH
 
     def OnFlange(self, evt):
-        FlgRatg(self, -1)
+        FlgRatg(self)
 
     def OnClose(self, evt):
         self.GetParent().Enable(True)   # add for child form
@@ -1515,11 +1542,9 @@ class CalcPnl(sc.ScrolledPanel):
 
 
 class FlgRatg(wx.Frame):
-    def __init__(self, parent, id):
-        self.lctrls = []
+    def __init__(self, parent):
 
-        wx.Frame.__init__(
-            self, parent, id,
+        super(FlgRatg, self).__init__(parent,
             title='Flange Pressure and Temperature Rating',
             size=(660, 750),
             style=wx.DEFAULT_FRAME_STYLE & ~ (wx.RESIZE_BORDER |
@@ -1533,9 +1558,12 @@ class FlgRatg(wx.Frame):
         self.pressbxs = []
         self.datax = []
         self.datay = []
+        self.lctrls = []
 
         self.pnl = FlgRatgPnl(self)
+        self.InitUI()
 
+    def InitUI(self):
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
 
         sizer_1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -1756,27 +1784,31 @@ class FlgRatgPnl(wx.Panel):
 
 class BldTrvlSht(wx.Frame):
     '''Routine to build form and populate grid'''
-    def __init__(self, parent, id, model=None):
+    def __init__(self, parent, model=None):
 
         self.parent = parent
-
+        self.model = model
         self.Lvl2tbl = 'InspectionTravelSheet'
-        model1 = None
         self.NoteStr = []
 
         self.ComCode = ''
         self.PipeMtrSpec = ''
-        font1 = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 
         if self.Lvl2tbl.find("_") != -1:
             frmtitle = (self.Lvl2tbl.replace("_", " "))
         else:
             frmtitle = (' '.join(re.findall('([A-Z][a-z]*)', self.Lvl2tbl)))
 
-        wx.Frame.__init__(self, parent, id, title=frmtitle, size=(1200, 900),
+        super(BldTrvlSht, self).__init__(parent, title=frmtitle, size=(1200, 900),
                           style=wx.DEFAULT_FRAME_STYLE &
                           ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX |
                             wx.MINIMIZE_BOX | wx.CLOSE_BOX))
+
+        self.InitUI()
+
+    def InitUI(self):
+        model1 = None
+        font1 = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 
         link_fld = 'Timing'
         self.frg_tbl = 'TrvlShtTime'
@@ -1898,10 +1930,8 @@ class BldTrvlSht(wx.Frame):
             self.data.sort(key=lambda tup: tup[self.pk_col])
 
     # use the sorted data to load the dataviewlistcontrol
-        if model is None:
+        if self.model is None:
             self.model = DataMods(self.Lvl2tbl, self.data)
-        else:
-            self.model = model
         self.dvc.AssociateModel(self.model)
 
         n = 0
@@ -3862,7 +3892,7 @@ class Dbase(object):
 if __name__ == '__main__':
 
     app = wx.App()
-    frm = StrUpFrm(None)
+    frm = StrUpFrm()
     frm.Show()
-    frm.Center()
+    frm.CenterOnScreen()
     app.MainLoop()
