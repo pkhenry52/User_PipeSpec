@@ -109,15 +109,15 @@ class Report:
                     for seg in range(
                             len(self.rptdata[n][pg+1])//len(colwdth2)):
                         temp_data = list(self.rptdata[n][pg+1]
-                                            [m * len(colwdth2):
-                                            (m * len(colwdth2) +
-                                            len(colwdth2))])
+                                         [m * len(colwdth2):
+                                         (m * len(colwdth2) +
+                                          len(colwdth2))])
                         p = 0
                         for item in temp_data:
                             if type(item) == str:
                                 if len(item) >= 15:
                                     item = Paragraph(item,
-                                                        styles['Normal'])
+                                                     styles['Normal'])
                                     temp_data[p] = item
                             p += 1
 

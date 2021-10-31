@@ -1,3 +1,4 @@
+
 import wx
 import wx.dataview as dv
 import textwrap
@@ -81,9 +82,9 @@ class StrUpFrm(wx.Frame):
 class SpecFrm(wx.Frame):
     def __init__(self, parent):
         self.parent = parent
-
+        ttl = 'Commodity Properties and Related Piping Specification'
         super(SpecFrm, self).__init__(parent,
-            title='Commodity Properties and Related Piping Specification')
+                                      title=ttl)
 
         self.Maximize(True)
         self.SetSizeHints(minW=1125, minH=750)
@@ -484,13 +485,21 @@ class BldFrm(wx.Panel):
         slectID = evt.GetId()
         fileid = str(slectID)[-1]
         html_path = ''
+        filename = ''
         filenames = ['Original_SOW.html', 'Original_HTR.html',
                      'Original_HTW.html', 'Original_NCR.html',
                      'Original_MSR.html', 'Original_RPS.html']
         # this should be the default location for the files
-        os.chdir('..')
-        filename = ('file:' + os.sep*2 + os.getcwd() + os.sep + 'Forms'
+
+        filename = (os.getcwd() + os.sep + 'Forms'
                     + os.sep + filenames[int(fileid)])
+
+        if 'Data' in filename:
+            os.chdir('..')
+            filename = (os.getcwd() + os.sep + 'Forms'
+                        + os.sep + filenames[int(fileid)])
+
+        html_path = 'file:' + os.sep*2 + filename
 
         # if default location does not work then open directory finder
         if os.path.isfile(filename) is False:
@@ -503,42 +512,46 @@ class BldFrm(wx.Panel):
                 html_path = dlg.GetPath()
             dlg.Destroy()
 
-        if html_path != '':
-            filename = ('file:' + os.sep*2 + html_path
-                        + os.sep + filenames[int(fileid)])
+            if html_path != '':
+                filename = ''
+
         if filename == '':
             wx.MessageBox('Problem Locating HTML File', 'Error', wx.OK)
         else:
-            brwsr_lst = list(webbrowser._browsers.keys())
-            all_brwsrs = ['firefox', 'safari', 'chrome', 'opera',
-                          'netscape', 'google-chrome', 'lynx',
-                          'mozilla', 'galeon', 'chromium',
-                          'chromium-browser', 'windows-default', 'w3m']
-            select_brwsr = list(set(brwsr_lst) & set(all_brwsrs))[0]
-
-            if select_brwsr != '':
-                webbrowser.get(select_brwsr).open(filename, new=2)
-            else:
-                wx.MessageBox('Problem Locating Web Browser', 'Error', wx.OK)
+            brwsrs = ['firefox', 'safari', 'chrome', 'opera',
+                      'netscape', 'google-chrome', 'lynx',
+                      'mozilla', 'galeon', 'chromium',
+                      'chromium-browser', 'windows-default',
+                      'w3m', 'no browser']
+            for brwsr in brwsrs:
+                if brwsr == 'no browser':
+                    wx.MessageBox('Problem Locating Web Browser',
+                                  'Error', wx.OK)
+                else:
+                    try:
+                        webbrowser.get(using=brwsr).open(html_path, new=2)
+                        break
+                    except Exception:
+                        pass
 
     def OnHTML(self, evt):
         # show the html file in browser
         wildcard = "HTML file (*.html)|*.html"
         msg = 'Select HTML File to View'
         filename = self.FylDilog(wildcard, msg, wx.FD_OPEN |
-                                 wx.FD_FILE_MUST_EXIST)
-        if filename != 'No File':
-            brwsr_lst = list(webbrowser._browsers.keys())
-            all_brwsrs = ['firefox', 'safari', 'chrome', 'opera',
-                          'netscape', 'google-chrome', 'lynx',
-                          'mozilla', 'galeon', 'chromium',
-                          'chromium-browser', 'windows-default', 'w3m']
-            select_brwsr = list(set(brwsr_lst) & set(all_brwsrs))[0]
+                                 wx.FD_CHANGE_DIR)
 
-            if select_brwsr != '':
-                webbrowser.get(select_brwsr).open(filename, new=2)
-            else:
-                wx.MessageBox('Problem Locating Web Browser', 'Error', wx.OK)
+        if filename != 'No File':
+            brwsrs = ['firefox', 'safari', 'chrome', 'opera',
+                      'netscape', 'google-chrome', 'lynx',
+                      'mozilla', 'galeon', 'chromium',
+                      'chromium-browser', 'windows-default', 'w3m']
+            for brwsr in brwsrs:
+                try:
+                    webbrowser.get(using=brwsr).open(filename, new=2)
+                    break
+                except Exception:
+                    pass
 
     def OnPDF(self, evt):
         PDFFrm(self)
@@ -941,7 +954,6 @@ class BldFrm(wx.Panel):
 class MergeFrm(wx.Frame):
     def __init__(self, parent):
 
-
         super(MergeFrm, self).__init__(parent,
                                        title='Select pdf files to merge',
                                        size=(725, 550))
@@ -1093,7 +1105,7 @@ class PDFFrm(wx.Frame):
 
         self.Bind(wx.EVT_BUTTON, self.OnLoadButton, loadbutton)
 
-        if self.filename != None:
+        if self.filename is not None:
             self.viewer.LoadFile(self.filename)
 
         self.CenterOnParent()
@@ -1121,13 +1133,13 @@ class CalcFrm(wx.Frame):
     def __init__(self, parent):
         self.lctrls = []
         self.parent = parent
-
-        super(CalcFrm, self).__init__(parent,
-                          title='Wall Thickness and Hydro-Test calculation',
-                          size=(580, 720),
-                          style=wx.DEFAULT_FRAME_STYLE & ~ (wx.RESIZE_BORDER |
-                                                            wx.MAXIMIZE_BOX |
-                                                            wx.MINIMIZE_BOX))
+        ttl = 'Wall Thickness and Hydro-Test calculation'
+        super(CalcFrm, self).__init__(parent, title=ttl,
+                                      size=(580, 720),
+                                      style=wx.DEFAULT_FRAME_STYLE &
+                                      ~ (wx.RESIZE_BORDER |
+                                         wx.MAXIMIZE_BOX |
+                                         wx.MINIMIZE_BOX))
 
         self.FrmSizer = wx.BoxSizer(wx.VERTICAL)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -1266,7 +1278,7 @@ class CalcPnl(sc.ScrolledPanel):
                                lctrls=self.lctrls))
         self.Bind(wx.EVT_COMBOBOX_CLOSEUP, self.WallThk, self.cmbSch)
         self.cmbSch.Disable()
-        self.noteSch = wx.TextCtrl(self, size=(60, -1), value='Sch',
+        self.noteSch = wx.TextCtrl(self, size=(100, -1), value='Sch',
                                    style=wx.TE_READONLY | wx.TE_LEFT)
         self.cmbsizer2.Add(noteOD, 0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 15)
         self.cmbsizer2.Add(self.cmbOD, 0, wx.LEFT |
@@ -1543,13 +1555,13 @@ class CalcPnl(sc.ScrolledPanel):
 
 class FlgRatg(wx.Frame):
     def __init__(self, parent):
-
-        super(FlgRatg, self).__init__(parent,
-            title='Flange Pressure and Temperature Rating',
-            size=(660, 750),
-            style=wx.DEFAULT_FRAME_STYLE & ~ (wx.RESIZE_BORDER |
-                                              wx.MAXIMIZE_BOX |
-                                              wx.MINIMIZE_BOX))
+        ttl = 'Flange Pressure and Temperature Rating'
+        super(FlgRatg, self).__init__(parent, title=ttl,
+                                      size=(660, 750),
+                                      style=wx.DEFAULT_FRAME_STYLE &
+                                      ~ (wx.RESIZE_BORDER |
+                                         wx.MAXIMIZE_BOX |
+                                         wx.MINIMIZE_BOX))
 
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
@@ -1631,13 +1643,15 @@ class FlgRatg(wx.Frame):
 
     def OnSelectP(self, evt):
         code = self.cmbPipe.GetValue()
-        qry = ('''SELECT Material_Spec_ID FROM PipeMaterialSpec
-                WHERE Pipe_Material_Spec = "''' +
-               self.cmbPipe.GetValue() + '"')
-        id = Dbase().Dsqldata(qry)[0][0]
-        qry = ('''SELECT Temperature, Pressure FROM PressTempTables
-                WHERE Specification_Number = ''' + str(id))
-        data1 = Dbase().Dsqldata(qry)
+        data1 = []
+        if code != '':
+            qry = ('''SELECT Material_Spec_ID FROM PipeMaterialSpec
+                    WHERE Pipe_Material_Spec = "''' +
+                   self.cmbPipe.GetValue() + '"')
+            id = Dbase().Dsqldata(qry)[0][0]
+            qry = ('''SELECT Temperature, Pressure FROM PressTempTables
+                    WHERE Specification_Number = ''' + str(id))
+            data1 = Dbase().Dsqldata(qry)
         if data1 != []:
             sortdata = sorted(data1, key=lambda tup: tup[0])
             self.datax, self.datay = map(list, zip(*sortdata))
@@ -1799,10 +1813,11 @@ class BldTrvlSht(wx.Frame):
         else:
             frmtitle = (' '.join(re.findall('([A-Z][a-z]*)', self.Lvl2tbl)))
 
-        super(BldTrvlSht, self).__init__(parent, title=frmtitle, size=(1200, 900),
-                          style=wx.DEFAULT_FRAME_STYLE &
-                          ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX |
-                            wx.MINIMIZE_BOX | wx.CLOSE_BOX))
+        super(BldTrvlSht, self).__init__(parent, title=frmtitle,
+                                         size=(1200, 900),
+                                         style=wx.DEFAULT_FRAME_STYLE &
+                                         ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX |
+                                           wx.MINIMIZE_BOX | wx.CLOSE_BOX))
 
         self.InitUI()
 

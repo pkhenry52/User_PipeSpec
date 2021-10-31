@@ -1,61 +1,68 @@
 <!DOCTYPE html>
 <html>
-
-<style>
-table#t04{
-  width:90%;
-  page-break-after: always;
-}
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 5px;
-  text-align: left;
-}
-table tr:nth-child(even) {
-  background-color: #eee;
-  color: black;
-}
-table tr:nth-child(odd) {
- background-color: #fff;
- color: black;
-}
-table th {
-  background-color: grey;
-  color: white;
-}
-table#t01{
-  width:90%;
-  page-break-after: always;
-}
-table#t02{
-  width:90%;
-  page-break-after: always;
-}
-table#t03{
-  width:90%;
-}
-label{
-    width:20px;
-    text-align: left;
-    padding-bottom: 10px;
-    padding-left: 35px;
-    padding-right: 20px
-}
-label.three{
-    width:40px;
-    text-align: left;
-    padding-bottom: 10px;
-    padding-left: 30px;
-    padding-right: 20px
-}
-</style>
-
+  <head>
+    <style>
+      label{
+          display: inline-block;
+          width:200px;
+          text-align: right;
+          padding-bottom: 10px;
+      }
+      table#t04{
+        width:90%;
+        page-break-after: always;
+      }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 5px;
+        text-align: left;
+      }
+      table tr:nth-child(even) {
+        background-color: #eee;
+        color: black;
+      }
+      table tr:nth-child(odd) {
+      background-color: #fff;
+      color: black;
+      }
+      table th {
+        background-color: grey;
+        color: white;
+      }
+      table#t01{
+        width:90%;
+        page-break-after: always;
+      }
+      table#t02{
+        width:90%;
+        page-break-after: always;
+      }
+      table#t03{
+        width:90%;
+      }
+      label{
+          width:20px;
+          text-align: left;
+          padding-bottom: 10px;
+          padding-left: 35px;
+          padding-right: 20px
+      }
+      label.three{
+          width:40px;
+          text-align: left;
+          padding-bottom: 10px;
+          padding-left: 30px;
+          padding-right: 20px
+      }
+    </style>
+    <title>General Inspection Checklist</title>
+  </head>
 <body>
+<h1 style="text-align:left;">General Inspection Checklist</h1>
 <table id="t04">
-  <caption style="font-size:150%;"><b>Inspection Checklist</b></caption>
   <tr>
     <th>Hold<br>Point</th>
     <th>Project Pressure Pipe Checklist</th> 
@@ -410,11 +417,13 @@ label.three{
 </table>
 <br>
 <br>
-<label style="font-size:120%;" class="three" for="QC">QC Manager Approval: </label>
+<label style="font-size:120%;" class="three" for="QC">QC Manager Approval:</label>
+<br>
 <input type="text" name="QC" id="QC" size="25">
 <br>
 <br>
 <label style="font-size:120%;" for="QCDate">Date:</label>
+<br>
 <input type="text" name="QCDate" id="QCDate" size="15">
 </body>
 
