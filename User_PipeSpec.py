@@ -1,6 +1,5 @@
 
 import wx
-from wx.core import DefaultSize
 import wx.dataview as dv
 import textwrap
 import sqlite3
@@ -8,7 +7,6 @@ import re
 import datetime
 import os
 import webbrowser
-# import pdfkit
 import wx.lib.scrolledpanel as sc
 from PyPDF4 import PdfFileMerger
 from bs4 import BeautifulSoup
@@ -52,7 +50,7 @@ class StrUpFrm(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         sizer.Add(self.b2, 0, wx.ALL | wx.CENTER, 8)
-        sizer.Add((10,10))
+        sizer.Add((10, 10))
         sizer.Add(self.b1, 0, wx.ALL | wx.CENTER, 5)
         self.SetSizer(sizer)
 
@@ -356,10 +354,11 @@ class BldFrm(wx.Panel):
         self.lblsizer2.Add(10, -1, 0)
 
         # add a button to call main form to search combo list data
-        self.b6 = wx.Button(self, label="<-- Search\nDescription", size=(80,40))
+        self.b6 = wx.Button(self, label="<-- Search\nDescription",
+                            size=(80, 40))
         self.Bind(wx.EVT_BUTTON, self.OnSearch, self.b6)
 
-        self.b5 = wx.Button(self, label="Reset", size=(40,30))
+        self.b5 = wx.Button(self, label="Reset", size=(40, 30))
         self.Bind(wx.EVT_BUTTON, self.OnRestoreBoxs, self.b5)
 
         self.cmbsizer2.Add(15, -1, 0)
@@ -420,14 +419,15 @@ class BldFrm(wx.Panel):
             self.Sizer1.Add(chksizer, 0, wx.ALL, 10)
 
         self.prtsizer = wx.BoxSizer(wx.VERTICAL)
-        self.b1 = wx.Button(self, label="Build Report for\nSelected Items", size=(120,40))
+        self.b1 = wx.Button(self, label="Build Report for\nSelected Items",
+                            size=(120, 40))
         self.Bind(wx.EVT_BUTTON, self.OnPrintItems, self.b1)
         self.b1.Enable(False)
-        self.b2 = wx.Button(self, label='Build Scope\nof Work', size=(120,40))
+        self.b2 = wx.Button(self, label='Build Scope\nof Work', size=(120, 40))
         self.Bind(wx.EVT_BUTTON, self.OnPrintScope, self.b2)
         self.b2.Enable(False)
         self.prtsizer.Add(self.b1, 0, wx.ALIGN_CENTER)
-        self.prtsizer.Add((10,10))
+        self.prtsizer.Add((10, 10))
         self.prtsizer.Add(self.b2, 0, wx.ALIGN_CENTER)
         self.Sizer1.Add(self.prtsizer, 0, wx.ALIGN_CENTER)
 
